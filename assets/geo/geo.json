@@ -1,0 +1,12 @@
+[{
+    "displayName": "japan, tokyo",
+    "destination": [135.499112, 34.668481, 135.499212, 34.668581]
+  },
+  {
+    "displayName": "japan",
+    "destination": [135, 34, 136, 35]
+  }, {
+    "displayName": "anyothers",
+    "destination": [35.499112, 4.668481, 35.499212, 4.668581]
+  }
+]
