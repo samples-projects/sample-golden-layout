@@ -79,6 +79,10 @@ module.exports = {
     new CopywebpackPlugin([{
       from: path.join(cesiumSource, 'Widgets'),
       to: 'Widgets'
-    }])
+    // }]),
+    // new webpack.ProvidePlugin({
+    //   $: 'jquery',
+    //   jQuery: 'jquery'
+    })
   ]
 };
