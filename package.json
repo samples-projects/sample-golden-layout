@@ -21,6 +21,7 @@
   "homepage": "https://github.com/kannkyo/sample-golden-layout#readme",
   "dependencies": {
     "bootstrap-honoka": "^4.3.1",
+    "c3": "^0.7.0",
     "cesium": "^1.55.0",
     "chart.js": "^2.8.0",
     "cookie-parser": "~1.4.3",

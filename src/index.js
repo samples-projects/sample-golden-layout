@@ -2,7 +2,9 @@
 window.CESIUM_BASE_URL = './';
 var Cesium = require('cesium/Cesium');
 var GoldenLayout = require('golden-layout');
-var Chart = require('chart.js');
+// var Chart = require('chart.js');
+var d3 = require('d3');
+var c3 = require('c3');
 
 require('cesium/Widgets/widgets.css');
 require('cesium/Widgets/lighter.css');
@@ -13,6 +15,7 @@ require('golden-layout/src/css/goldenlayout-base.css');
 require('golden-layout/src/css/goldenlayout-dark-theme.css');
 // require('golden-layout/src/css/goldenlayout-soda-theme.css');
 // require('golden-layout/src/css/goldenlayout-translucent-theme.css');
+require('c3/c3.css');
 require('./css/main.css');
 
 let config = {
@@ -93,7 +96,7 @@ myLayout.registerComponent('componentA', function (container, state) {
     };
 
     myLayout.eventHub.on('tick', currentTime => {
-      document.getElementById("tick").value = currentTime.toString();
+      document.getElementById("tick").value = Cesium.JulianDate.toIso8601(currentTime, 3);
     });
 
     for (let key in checkbox) {
@@ -177,65 +180,48 @@ myLayout.registerComponent('componentB', function (container, componentState) {
 });
 
 myLayout.registerComponent('componentC', function (container, componentState) {
-  container.getElement().html('<canvas id="myChart" width="400" height="400"></canvas>');
+  container.getElement().html('<div id="chart"></div>');
 
   $(document).ready(function () {
-    var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    var config = {
-      type: 'line',
+    var chart = c3.generate({
+      bindto: '#chart',
       data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-        datasets: [{
-          label: 'My First dataset',
-          backgroundColor: 'rgb(255, 99, 132)',
-          borderColor: 'rgb(255, 99, 132)',
-          data: [
-            1, 2, 5, 1, 3, 4, 6, 7, 4, 4
-          ],
-          fill: false,
-        }, {
-          label: 'My Second dataset',
-          fill: false,
-          backgroundColor: 'rgb(54, 162, 235)',
-          borderColor: 'rgb(54, 162, 235)',
-          data: [
-            1, 2, 5, 1, 3, 4, 6, 7, 4, 4
-          ],
-        }]
+        x: 'x',
+        xFormat: '%Y-%m-%dT%H:%M:%S.%LZ',
+        columns: [
+          ['x', '2012-03-15T00:00:00.000Z', '2012-03-15T04:00:00.000Z', '2012-03-15T08:00:00.000Z', '2012-03-15T12:00:00.000Z', '2012-03-15T16:00:00.000Z', '2012-03-15T20:00:00.000Z'],
+          ['data1', 30, 200, 100, 400, 150, 250],
+          ['data2', 130, 340, 200, 500, 250, 350],
+          ['data3', 400, 500, 450, 700, 600, 500]
+        ]
       },
-      options: {
-        responsive: true,
-        title: {
-          display: true,
-          text: 'Chart.js Line Chart'
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-        },
-        hover: {
-          mode: 'nearest',
-          intersect: true
-        },
-        scales: {
-          xAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Month'
-            }
-          }],
-          yAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Value'
-            }
+      zoom: {
+        enabled: true
+      },
+      grid: {
+        x: {
+          lines: [{
+            value: '2012-03-15T00:00:00.000Z',
+            text: 'Label 1'
           }]
         }
+      },
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%Y-%m-%dT%H:%M:%S.%LZ'
+          }
+        }
       }
-    };
-    var myLineChart = new Chart('myChart', config);
+    });
+
+    myLayout.eventHub.on('tick', currentTime => {
+      chart.xgrids([{
+        value: Cesium.JulianDate.toIso8601(currentTime, 3),
+        text: 'Label 1'
+      }]);
+    });
   });
 });
 
