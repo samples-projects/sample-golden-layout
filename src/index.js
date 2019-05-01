@@ -64,18 +64,25 @@ myLayout.on('stateChanged', function () {
 
 myLayout.registerComponent('componentA', function (container, state) {
   container.getElement().html(`
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="agiIsVisible" checked>
-      <label class="custom-control-label" for="agiIsVisible">AGI</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="issIsVisible" checked>
-      <label class="custom-control-label" for="issIsVisible">ISS</label>
-    </div>
-    <div class="custom-control custom-checkbox">
-      <input type="checkbox" class="custom-control-input" id="satelliteIsVisible" checked>
-      <label class="custom-control-label" for="satelliteIsVisible">Satellite</label>
-    </div>
+    <form name="myForm">
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="agiIsVisible" checked>
+          <label class="custom-control-label" for="agiIsVisible">AGI</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="issIsVisible" checked>
+          <label class="custom-control-label" for="issIsVisible">ISS</label>
+        </div>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="satelliteIsVisible" checked>
+          <label class="custom-control-label" for="satelliteIsVisible">Satellite</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="text" id="tick" value=""/>
+      </div>
+    </form>
     `);
 
   $(document).ready(function () {
@@ -84,6 +91,10 @@ myLayout.registerComponent('componentA', function (container, state) {
       iss: document.getElementById("issIsVisible"),
       sat: document.getElementById("satelliteIsVisible")
     };
+
+    myLayout.eventHub.on('tick', currentTime => {
+      document.getElementById("tick").value = currentTime.toString();
+    });
 
     for (let key in checkbox) {
       if (state[key] != null) {
@@ -125,6 +136,14 @@ myLayout.registerComponent('componentB', function (container, componentState) {
       timeline: true,
       vrButton: true
     });
+
+    viewer.clockViewModel.clock.onTick.addEventListener(function () {
+      myLayout.eventHub.emit('tick', viewer.clockViewModel.currentTime);
+    });
+
+    // setInterval(() => {
+    //   console.log(viewer.clockViewModel.currentTime.toString());
+    // }, 1000);
 
     // シナリオ読込
     let dataSources = new Cesium.CzmlDataSource();
