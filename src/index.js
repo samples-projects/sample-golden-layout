@@ -206,6 +206,9 @@ myLayout.registerComponent('componentC', function (container, componentState) {
           }]
         }
       },
+      transition: {
+        duration: 0
+      },
       axis: {
         x: {
           type: 'timeseries',
